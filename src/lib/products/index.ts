@@ -32,7 +32,7 @@ const reshapeProduct = (product: ProductDrugStore): Product | undefined => {
     images: reshapeImages(images, product.name),
   };
 };
-const reshapedProducts = (products: ProductDrugStore[], lenght: number) => {
+const reshapedProducts = (products: ProductDrugStore[]) => {
   const reshapedProducts = [];
   for (const product of products) {
     if (product) {
@@ -42,7 +42,6 @@ const reshapedProducts = (products: ProductDrugStore[], lenght: number) => {
         reshapedProducts.push(reshapedProduct);
       }
     }
-    if (reshapedProducts.length >= lenght) break;
   }
 
   return reshapedProducts;
@@ -50,7 +49,7 @@ const reshapedProducts = (products: ProductDrugStore[], lenght: number) => {
 export async function getProducts(): Promise<Product[] | undefined> {
   const endpoint = `${Server_URL}/product`;
   const result = await getItem({ endpoint });
-  return reshapedProducts(result, 8);
+  return reshapedProducts(result);
 }
 export async function getProduct(handle: string): Promise<Product | undefined> {
   const endpoint = `${Server_URL}/product/${handle}`;

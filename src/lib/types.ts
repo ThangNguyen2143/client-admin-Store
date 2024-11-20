@@ -40,3 +40,22 @@ export type Product = Omit<ProductDrugStore, "images"> & {
   images: Image[];
   handle: string;
 };
+export type Order = {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  Total: number;
+  AddressRecive: string;
+  TypePay: string;
+  status: string | undefined;
+  NameRecive: string;
+  PhoneRecive: string;
+  orderDetail: {
+    quantity: number;
+    product: {
+      name: string;
+      id: number;
+      price: number;
+    };
+  }[];
+};

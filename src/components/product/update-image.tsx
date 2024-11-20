@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ImageCloud from "./ImageCloud";
 import { CldUploadWidget } from "next-cloudinary";
 import { Image as Img } from "~/lib/types";
-function ImageContainer(imgs: string[]) {
+export function ImageContainer(imgs: string[]) {
   if (imgs.length == 0 || !imgs)
     return (
       <div>
@@ -30,7 +30,7 @@ function ImageContainer(imgs: string[]) {
     );
   });
 }
-function UploadImage({ imgs }: { imgs?: Img[] }) {
+function UploadImage({ imgs, productId }: { imgs?: Img[]; productId: number }) {
   const [loaded, setLoaded] = useState(false);
   const valueImg = imgs?.map((img) => img.url);
   const initState: string[] = valueImg || [];
@@ -52,7 +52,7 @@ function UploadImage({ imgs }: { imgs?: Img[] }) {
   return (
     <div className="m-2 space-y-4">
       <CldUploadWidget
-        signatureEndpoint={"/api/sign-cloudinary-params"}
+        signatureEndpoint={`/api/sign-cloudinary-params?productId=${productId}`}
         onSuccess={(result, { widget }) => {
           if (result.info === undefined) throw new Error();
           const info = JSON.parse(result.info.toString());
@@ -63,6 +63,9 @@ function UploadImage({ imgs }: { imgs?: Img[] }) {
           );
           setUploadedImages((prevImages) => [...prevImages, previewUrl]);
           setIsDisabled(false);
+        }}
+        onQueuesEnd={(result, { widget }) => {
+          widget.close();
         }}
       >
         {({ open }) => {
@@ -77,7 +80,7 @@ function UploadImage({ imgs }: { imgs?: Img[] }) {
               type="button"
               onClick={handleClick}
             >
-              {isDisabled ? "Opening Widget" : "Upload Image"}
+              {isDisabled ? "Đăng hình" : "Thêm hình ảnh"}
             </button>
           );
         }}
@@ -85,7 +88,7 @@ function UploadImage({ imgs }: { imgs?: Img[] }) {
 
       {uploadedImages.length !== 0 && (
         <div className="flex flex-wrap">
-          <h2 className="w-full text-xl font-bold">Uploaded images</h2>
+          <h2 className="w-full text-xl font-bold">Danh sách hình ảnh</h2>
           {ImageContainer(uploadedImages)}
         </div>
       )}

@@ -1,69 +1,73 @@
-/* eslint-disable @next/next/no-img-element */
-export default function Home() {
+import { notFound } from "next/navigation";
+import BarChartComp from "~/components/BarChartComp";
+import { getOrders } from "~/lib/orders";
+import { getProducts } from "~/lib/products";
+import { getTypeProducts } from "~/lib/products/typeProduct";
+import { Order, Product, TypeProduct } from "~/lib/types";
+
+function totalTypeSale(
+  type: TypeProduct,
+  orders: Order[],
+  products: Product[],
+) {
+  let total = 0;
+  const productByType = products.filter(
+    (item) => item.typeProduct.id === type.id,
+  );
+  if (productByType.length == 0) return total;
+  orders.forEach((order) => {
+    productByType.forEach((product) => {
+      const filter = order.orderDetail.filter(
+        (pro) => pro.product.id == product.id,
+      );
+      if (filter.length > 0) total += filter[0].quantity * product.price.value;
+    });
+  });
+  // type -> product -> oD -> o
+  return total;
+}
+function bussinesTotal(orders: Order[], year: number) {
+  const ordersByYear = orders.filter(
+    (order) => new Date(order.createdAt).getFullYear() === year,
+  );
+  const res: { name: string; Tổng: number }[] = [];
+  for (let month = 1; month <= 12; month++) {
+    const ordersByMonth = ordersByYear.filter(
+      (order) => new Date(order.createdAt).getMonth() === month,
+    );
+    let total = 0;
+    ordersByMonth.forEach((order) => {
+      total += order.Total;
+    });
+    res.push({ name: "Tháng " + month, Tổng: total });
+  }
+  return res;
+}
+export default async function Home() {
+  const orderList = await getOrders();
+  const listProduct = await getProducts();
+  const listTypes = await getTypeProducts();
+  if (!listProduct || !listTypes || !orderList) return notFound();
+  const productChartData: { name: string; "Đã bán": number }[] = [];
+  for (let index = 0; index < listTypes!.length; index++) {
+    productChartData.push({
+      name: listTypes[index].name,
+      "Đã bán": totalTypeSale(listTypes[index], orderList, listProduct),
+    });
+  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="stats shadow">
-        <div className="stat">
-          <div className="stat-figure text-secondary">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              className="inline-block h-8 w-8 stroke-current"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
-          </div>
-          <div className="stat-title">Downloads</div>
-          <div className="stat-value">31K</div>
-          <div className="stat-desc">Jan 1st - Feb 1st</div>
+      <div className="grid grid-cols-2">
+        <div>
+          <h2>Thống kê Doanh thu</h2>
+          <BarChartComp
+            data={bussinesTotal(orderList, 2023)}
+            feilds={["Tổng"]}
+          />
         </div>
-
-        <div className="stat">
-          <div className="stat-figure text-secondary">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              className="inline-block h-8 w-8 stroke-current"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-              ></path>
-            </svg>
-          </div>
-          <div className="stat-title">New Users</div>
-          <div className="stat-value">4,200</div>
-          <div className="stat-desc">↗︎ 400 (22%)</div>
-        </div>
-
-        <div className="stat">
-          <div className="stat-figure text-secondary">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              className="inline-block h-8 w-8 stroke-current"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-              ></path>
-            </svg>
-          </div>
-          <div className="stat-title">New Registers</div>
-          <div className="stat-value">1,200</div>
-          <div className="stat-desc">↘︎ 90 (14%)</div>
+        <div>
+          <h2>Thống kê doanh thu theo loại</h2>
+          <BarChartComp data={productChartData} feilds={["Đã bán"]} />
         </div>
       </div>
     </main>

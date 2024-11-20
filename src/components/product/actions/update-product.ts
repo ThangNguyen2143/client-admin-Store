@@ -2,8 +2,9 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { Server_URL } from "~/lib/Constans";
-import { createProduct, createProductDto, updateProduct } from "~/lib/products";
+import { postItem, Server_URL } from "~/lib/Constans";
+import { getProducts, updateProduct as update } from "~/lib/products";
+
 const schema = z
   .object({
     name: z
@@ -72,7 +73,7 @@ const schema = z
       .positive(),
   })
   .required();
-export async function ValidateForm(preState: any, form: FormData) {
+export async function updateProduct(preState: any, form: FormData) {
   const validatedFields = schema.safeParse({
     name: form.get("name"),
     ingredient: form.get("ingredient"),
@@ -90,16 +91,23 @@ export async function ValidateForm(preState: any, form: FormData) {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const fileImg = form.get("img");
-  const newProduct = await createProduct(validatedFields.data);
-  const newForm = new FormData();
-  newForm.append("img", fileImg!);
-  const result = await fetch(`${Server_URL}/product/${newProduct?.id}`, {
-    method: "POST",
-    body: newForm,
-  });
-  revalidatePath("/manager/products");
+  const productId = form.get("id");
+  if (productId)
+    if (form.get("img")) {
+      const newForm = new FormData();
+      newForm.append("img", form.get("img")!);
+      const result = await fetch(`${Server_URL}/product/${productId}`, {
+        method: "POST",
+        body: newForm,
+      });
+      revalidatePath(`/manager/products`);
+      redirect("/manager/products");
+    } else {
+      await update(+productId, validatedFields.data);
+      return { message: "Cập nhật thành công" };
+    }
+
   return {
-    message: "Thêm sản phẩm thành công",
+    message: "Không nhận được id sản phẩm",
   };
 }

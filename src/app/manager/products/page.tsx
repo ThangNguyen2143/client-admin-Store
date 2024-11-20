@@ -32,7 +32,7 @@ async function ProductsPage() {
             title="Thêm sản phẩm mới"
             typeBtn="primary"
           >
-            <AddForm dataOption={typeProductList} type="Thêm mới" />
+            <AddForm dataOption={typeProductList} />
           </Dialog>
         </div>
       </div>

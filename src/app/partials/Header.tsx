@@ -2,15 +2,19 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 function Header() {
   const { data: session } = useSession();
   const route = useRouter();
 
-  // if (!session) route.push("/api/auth/signin");
-  if (!session || !session.user) {
-    return <a href="/api/auth/signin">Please Sign in</a>;
-  }
+  // if (!session)
+  useEffect(() => {
+    if (!session || !session.user) {
+      route.push("/api/auth/signin");
+      // return <a href="/api/auth/signin">Please Sign in</a>;
+    }
+  }, [session]);
   return (
     <div>
       <div className="navbar bg-base-100">

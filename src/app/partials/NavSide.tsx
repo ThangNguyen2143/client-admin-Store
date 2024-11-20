@@ -4,7 +4,7 @@ import Image from "next/image";
 function NavSide() {
   return (
     <aside>
-      <div className="flex justify-center">
+      <div className="flex h-32 w-32 justify-center">
         <Image src="/next.svg" alt="Logo website" width={200} height={100} />
       </div>
       <ul className="menu w-56 rounded-box">
