@@ -100,6 +100,8 @@ export async function updateProduct(preState: any, form: FormData) {
         method: "POST",
         body: newForm,
       });
+
+      console.log(await result.json());
       revalidatePath(`/manager/products`);
       redirect("/manager/products");
     } else {

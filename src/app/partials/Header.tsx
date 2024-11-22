@@ -8,13 +8,13 @@ function Header() {
   const { data: session } = useSession();
   const route = useRouter();
 
+  // useEffect(() => {
+  //   if (!session?.user) route.push("/api/auth/signin");
+  // });
   // if (!session)
-  useEffect(() => {
-    if (!session || !session.user) {
-      route.push("/api/auth/signin");
-      // return <a href="/api/auth/signin">Please Sign in</a>;
-    }
-  }, [session]);
+  // if (!session?.user) {
+  //   return <a href="/api/auth/signin">Please Sign in</a>;
+  // }
   return (
     <div>
       <div className="navbar bg-base-100">
@@ -157,44 +157,45 @@ function Header() {
               </li>
             </ul>
           </div>
-          <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost">
-              <div className="avatar">
-                <div className="skeleton w-12 rounded-full">
-                  {/*eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                    alt="Avatar user"
-                  />
+          {session ? (
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-ghost">
+                <div className="avatar">
+                  <div className="skeleton w-12 rounded-full">
+                    <span className="text-xl">A</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-start">
+                  <div className="text-lg font-bold">
+                    {session?.user.name || "You failed"}
+                  </div>
+                  <div className="text-sm font-light text-secondary-content">
+                    Administator
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col items-start">
-                <div className="text-lg font-bold">
-                  {session?.user.name || "You failed"}
-                </div>
-                <div className="text-sm font-light text-secondary-content">
-                  Administator
-                </div>
-              </div>
+              <ul
+                tabIndex={0}
+                className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
+              >
+                <li>
+                  <a className="justify-between">
+                    Profile
+                    <span className="badge">New</span>
+                  </a>
+                </li>
+                <li>
+                  <a>Settings</a>
+                </li>
+                <li>
+                  <Link href={"/api/auth/signout"}>Sign Out</Link>
+                </li>
+              </ul>
             </div>
-            <ul
-              tabIndex={0}
-              className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
-            >
-              <li>
-                <a className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
-                </a>
-              </li>
-              <li>
-                <a>Settings</a>
-              </li>
-              <li>
-                <Link href={"/api/auth/signout"}>Sign Out</Link>
-              </li>
-            </ul>
-          </div>
+          ) : (
+            <a href="/api/auth/signin">Please Sign in</a>
+          )}
         </div>
       </div>
       <div className="img-header min-h-32 rounded-b-lg bg-cover"></div>

@@ -1,10 +1,10 @@
-import { Key } from "react";
+"use client";
 import { Product } from "~/lib/types";
-import { getProducts } from "~/lib/products";
 import Dialog from "../Dialog";
 import Link from "next/link";
 import ImageCloud from "./ImageCloud";
-function DetailProduct(product: Product) {
+import { useEffect, useState } from "react";
+function DetailProduct({ product }: { product: Product }) {
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col lg:flex-row">
@@ -41,10 +41,10 @@ function DetailProduct(product: Product) {
     </div>
   );
 }
-function tableItem(product: Product, key: Key) {
+function TableItem({ product }: { product: Product }) {
   return (
-    <tr key={key}>
-      <th>{Number.parseInt(key.toString()) + 1}</th>
+    <tr>
+      <th>{product.id}</th>
       <td>{product.name}</td>
       <td>{product.price.value}</td>
       <td>{product.unit}</td>
@@ -56,16 +56,40 @@ function tableItem(product: Product, key: Key) {
           nameBtn="Xem thêm"
           typeBtn="primary"
           title="Chi tiết"
-          id={key + product.name}
+          id={product.name}
         >
-          <DetailProduct {...product} />
+          <DetailProduct product={product} />
         </Dialog>
       </td>
     </tr>
   );
 }
-async function ProductTable() {
-  const productList = await getProducts();
+function ProductTable({ productList }: { productList: Product[] }) {
+  const totalPage = parseInt((productList.length / 10).toString());
+  const [currentPage, setCurentPage] = useState(1);
+  const [currentList, setCurrentList] = useState(productList.slice(0, 10));
+  const pagintion = [];
+  for (let index = 1; index <= totalPage; index++) {
+    pagintion.push(
+      <input
+        className="btn btn-square join-item"
+        type="radio"
+        name="options"
+        aria-label={index.toString()}
+        value={index}
+        checked={currentPage === index}
+        onClick={(e) => setCurentPage(+e.currentTarget.value)}
+      />,
+    );
+  }
+  useEffect(() => {
+    setCurrentList(
+      productList.slice(
+        0 + (currentPage - 1) * 10,
+        10 + (currentPage - 1) * 10,
+      ),
+    );
+  }, [currentPage]);
   return (
     <div className="overflow-x-auto">
       <table className="table">
@@ -83,7 +107,7 @@ async function ProductTable() {
         </thead>
         <tbody>
           {productList?.map((item, index) => {
-            return tableItem(item, index);
+            return <TableItem product={item} key={index} />;
           })}
         </tbody>
         <tfoot>
@@ -99,14 +123,11 @@ async function ProductTable() {
           </tr>
         </tfoot>
       </table>
-      <div className="flex w-1/2 justify-end">
-        <div className="join">
-          <button className="btn join-item btn-active">1</button>
-          <button className="btn join-item">2</button>
-          <button className="btn join-item">3</button>
-          <button className="btn join-item">4</button>
+      {totalPage >= 2 && (
+        <div className="flex w-full justify-center">
+          <div className="join">{pagintion.map((item) => item)}</div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

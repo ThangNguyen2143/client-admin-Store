@@ -1,10 +1,12 @@
 import Dialog from "~/components/Dialog";
 import AddForm from "~/components/product/add-form";
 import ProductTable from "~/components/product/product-table";
+import { getProducts } from "~/lib/products";
 import { getTypeProducts } from "~/lib/products/typeProduct";
 
 async function ProductsPage() {
   const typeProductList = await getTypeProducts();
+  const productList = await getProducts();
   return (
     <main className="flex min-w-full flex-col items-center justify-between p-24">
       <div className="flex w-full justify-between">
@@ -36,7 +38,7 @@ async function ProductsPage() {
           </Dialog>
         </div>
       </div>
-      <ProductTable />
+      {productList && <ProductTable productList={productList} />}
     </main>
   );
 }

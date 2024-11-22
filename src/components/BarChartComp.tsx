@@ -17,7 +17,6 @@ export default function BarChartComp({
   data: any[];
   feilds: string[];
 }) {
-  console.log(data, feilds);
   return (
     <BarChart
       width={500}
