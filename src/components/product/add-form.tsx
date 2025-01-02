@@ -2,7 +2,6 @@
 import { GetTypeProductsItem } from "./GetTypeProductItem";
 import { useFormState } from "react-dom";
 import { ValidateForm } from "./actions/add-product";
-import UploadImage from "./update-image";
 import { TypeProduct } from "~/lib/types";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -20,7 +19,40 @@ const initialState = {
     typeProductId: undefined,
   },
 };
-
+function FormInput({
+  label,
+  typeInput,
+  nameInput,
+  err,
+}: {
+  label: string;
+  typeInput: string;
+  nameInput: string;
+  err?: string[];
+}) {
+  return (
+    <label className="form-control w-full max-w-xs">
+      <div className="label">
+        <span className="label-text">{label}</span>
+      </div>
+      <input
+        type={typeInput}
+        className="input input-bordered w-full max-w-xs"
+        name={nameInput}
+        placeholder={"Nhập " + label}
+      />
+      <div className="label">
+        {err?.map((mess, index) => {
+          return (
+            <span className="badge badge-info label-text-alt" key={index}>
+              {mess}
+            </span>
+          );
+        })}
+      </div>
+    </label>
+  );
+}
 function AddForm({ dataOption }: { dataOption: TypeProduct[] | undefined }) {
   const [state, formAction] = useFormState(ValidateForm, initialState);
   const route = useRouter();
@@ -36,46 +68,18 @@ function AddForm({ dataOption }: { dataOption: TypeProduct[] | undefined }) {
       action={formAction}
     >
       <input type="hidden" name="id" readOnly />
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Tên thuốc</span>
-        </div>
-        <input
-          type="text"
-          className="input input-bordered w-full max-w-xs"
-          name="name"
-          placeholder="Nhập tên thuốc"
-        />
-        <div className="label">
-          {state?.errors?.name?.map((mess, index) => {
-            return (
-              <span className="badge badge-info label-text-alt" key={index}>
-                {mess}
-              </span>
-            );
-          })}
-        </div>
-      </label>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Giá</span>
-        </div>
-        <input
-          type="number"
-          className="input input-bordered w-full max-w-xs"
-          placeholder="Giá công khai"
-          name="price"
-        />
-        <div className="label">
-          {state?.errors?.price?.map((mess, index) => {
-            return (
-              <span className="badge badge-info label-text-alt" key={index}>
-                {mess}
-              </span>
-            );
-          })}
-        </div>
-      </label>
+      <FormInput
+        label="Tên thuốc"
+        nameInput="name"
+        typeInput="text"
+        err={state?.errors?.name}
+      />
+      <FormInput
+        label="Giá"
+        nameInput="price"
+        typeInput="number"
+        err={state?.errors?.price}
+      />
       <label className="form-control w-full max-w-xs">
         <div className="label">
           <span className="label-text">Loại thuốc</span>
@@ -114,126 +118,42 @@ function AddForm({ dataOption }: { dataOption: TypeProduct[] | undefined }) {
           })}
         </div>
       </label>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Quy cách</span>
-        </div>
-        <input
-          type="text"
-          className="input input-bordered w-full max-w-xs"
-          placeholder="Đóng gói thế nào?"
-          name="howPack"
-        />
-        <div className="label">
-          {state?.errors?.howPack?.map((mess, index) => {
-            return (
-              <span className="badge badge-info label-text-alt" key={index}>
-                {mess}
-              </span>
-            );
-          })}
-        </div>
-      </label>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Cách dùng</span>
-        </div>
-        <input
-          type="text"
-          className="input input-bordered w-full max-w-xs"
-          placeholder="Cách sử dụng thuốc"
-          name="typeUse"
-        />
-        <div className="label">
-          {state?.errors?.typeUse?.map((mess, index) => {
-            return (
-              <span className="badge badge-info label-text-alt" key={index}>
-                {mess}
-              </span>
-            );
-          })}
-        </div>
-      </label>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Chỉ định</span>
-        </div>
-        <input
-          type="text"
-          className="input input-bordered w-full max-w-xs"
-          placeholder="Trị bệnh gì?"
-          name="destination"
-        />
-        <div className="label">
-          {state?.errors?.destination?.map((mess, index) => {
-            return (
-              <span className="badge badge-info label-text-alt" key={index}>
-                {mess}
-              </span>
-            );
-          })}
-        </div>
-      </label>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Liều lượng</span>
-        </div>
-        <input
-          type="text"
-          className="input input-bordered w-full max-w-xs"
-          placeholder="Dùng bao nhiêu một ngày"
-          name="dosage"
-        />
-        <div className="label">
-          {state?.errors?.dosage?.map((mess, index) => {
-            return (
-              <span className="badge badge-info label-text-alt" key={index}>
-                {mess}
-              </span>
-            );
-          })}
-        </div>
-      </label>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Số lượng</span>
-        </div>
-        <input
-          type="number"
-          className="input input-bordered w-full max-w-xs"
-          placeholder="10"
-          name="stored"
-        />
-        <div className="label">
-          {state?.errors?.stored?.map((mess, index) => {
-            return (
-              <span className="badge badge-info label-text-alt" key={index}>
-                {mess}
-              </span>
-            );
-          })}
-        </div>
-      </label>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Đơn vị tính</span>
-        </div>
-        <input
-          type="text"
-          className="input input-bordered w-full max-w-xs"
-          placeholder="Chai, hộp,..."
-          name="unit"
-        />
-        <div className="label">
-          {state?.errors?.unit?.map((mess, index) => {
-            return (
-              <span className="badge badge-info label-text-alt" key={index}>
-                {mess}
-              </span>
-            );
-          })}
-        </div>
-      </label>
+      <FormInput
+        label="Quy cách"
+        nameInput="howPack"
+        typeInput="text"
+        err={state?.errors?.howPack}
+      />
+      <FormInput
+        label="Cách dùng"
+        nameInput="typeUse"
+        typeInput="text"
+        err={state?.errors?.typeUse}
+      />
+      <FormInput
+        label="Chỉ định"
+        nameInput="destination"
+        typeInput="text"
+        err={state?.errors?.destination}
+      />
+      <FormInput
+        label="Liều lượng"
+        nameInput="dosage"
+        typeInput="text"
+        err={state?.errors?.dosage}
+      />
+      <FormInput
+        label="Số lượng"
+        nameInput="stored"
+        typeInput="number"
+        err={state?.errors?.stored}
+      />
+      <FormInput
+        label="Đơn vị tính"
+        nameInput="unit"
+        typeInput="text"
+        err={state?.errors?.unit}
+      />
       <label className="form-control w-full max-w-xs">
         <div className="label">
           <span className="label-text">Thêm hình ảnh</span>
@@ -243,9 +163,7 @@ function AddForm({ dataOption }: { dataOption: TypeProduct[] | undefined }) {
           name="img"
           className="file-input file-input-bordered w-full max-w-xs"
         />
-        <div className="label">
-          {/* <span className="label-text-alt">Alt label</span> */}
-        </div>
+        <div className="label"></div>
       </label>
       <div className="col-span-3 flex justify-center">
         <button type="submit" className="btn btn-outline w-full">

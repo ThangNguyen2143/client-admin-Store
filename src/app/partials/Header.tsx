@@ -19,13 +19,7 @@ function Header() {
     <div>
       <div className="navbar bg-base-100">
         <div className="flex-1">
-          <div className="form-control">
-            <input
-              type="text"
-              placeholder="Search"
-              className="input input-bordered w-24 md:w-auto"
-            />
-          </div>
+          <h1 className="text-pretty text-2xl font-bold">Tâm An Pharmacy</h1>
         </div>
         <div className="flex-none gap-2">
           <label className="btn-circle swap swap-rotate">

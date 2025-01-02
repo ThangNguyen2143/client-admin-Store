@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { number } from "zod";
-import BarChartComp from "~/components/BarChartComp";
+import BarChartComp from "~/components/home/BarChartComp";
 import { getOrders } from "~/lib/orders";
 import { getProducts } from "~/lib/products";
 import { getTypeProducts } from "~/lib/products/typeProduct";
@@ -98,7 +98,6 @@ export default async function Home() {
     totalSale += totalTypeSale(listTypes[index], orderList, listProduct);
   }
   const { max, min } = bestSaler(orderList);
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="grid grid-cols-2">
@@ -135,7 +134,9 @@ export default async function Home() {
         <div className="stats stats-vertical shadow lg:stats-horizontal">
           <div className="stat">
             <div className="stat-title">Sản phẩm bán chạy</div>
-            <div className="stat-value max-w-11 text-wrap">{max.name}</div>
+            <div className="stat-value w-full overflow-hidden text-ellipsis whitespace-nowrap">
+              {max.name}
+            </div>
             <div className="stat-desc">
               Đã bán{" "}
               {max.total.toLocaleString("it-IT", {

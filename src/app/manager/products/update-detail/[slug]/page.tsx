@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import AddForm from "~/components/product/add-form";
 import UpdateForm from "~/components/product/update-form";
 import { getProduct } from "~/lib/products";
 import { getTypeProducts } from "~/lib/products/typeProduct";

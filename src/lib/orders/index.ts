@@ -94,3 +94,17 @@ export async function updateOrder(
 
   return result;
 }
+export async function findOrders(state: string, query: string) {
+  const endpoint = `${Server_URL}/order?query=${query}&state=${state}`;
+  const result = await getItem({ endpoint });
+  return reshapedOrders(result);
+}
+export async function OrdersPerPage(
+  state: string,
+  query: string,
+  page: number,
+) {
+  const endpoint = `${Server_URL}/order/page?state=${state}&query=${query}&page=${page}`;
+  const result = await getItem({ endpoint });
+  return reshapedOrders(result);
+}

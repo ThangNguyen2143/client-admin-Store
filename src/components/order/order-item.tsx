@@ -5,8 +5,6 @@ import UpdateStateOrderBtn from "./update-btn";
 import { useEffect, useState } from "react";
 import DeleteOrderBtn from "./delete-btn";
 import ExportPdfBtn from "./exportPdf-btn";
-
-// import { updateOrder } from "~/lib/orders";
 function DetailOrder({ order }: { order: Order }) {
   const convertDay = new Date(order.createdAt);
   const [updateShow, setUpdateShow] = useState(true);

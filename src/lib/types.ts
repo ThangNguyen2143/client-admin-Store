@@ -59,3 +59,14 @@ export type Order = {
     };
   }[];
 };
+export type Blog = {
+  id: number;
+  title: string;
+  content: string;
+  img: Image[];
+  state: string;
+  author: {
+    id: number;
+    name: string;
+  };
+};

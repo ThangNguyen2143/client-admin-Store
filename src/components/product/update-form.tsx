@@ -32,7 +32,7 @@ function UpdateForm({ dataOption, dataFields }: propsForm) {
           name="name"
           placeholder="Nhập tên thuốc"
           value={product.name}
-          onChange={(e) => setProduct({ ...product, name: e.target.value })}
+          readOnly
         />
         <div className="label">
           {state?.errors?.name?.map((mess, index) => {
